@@ -1,23 +1,38 @@
 ﻿// See https://aka.ms/new-console-template for more information
 using System;
+using System.Collections.Generic;
 using System.IO;
+using System.Linq;
 
 public class Program
 {
     private static bool swapped = true;
-    private static Game[] games = new Game[4];
+    private static List<Game> games = new();
+    
 
     public static void Main()
     {
-        for (int i = 0; i < games.Length; i++)
+        Load();
+        foreach (Game s in games)
+        {
+            Console.WriteLine(s);
+        }
+        while (true)
         {
             Console.WriteLine("Input Game.");
-            games[i].gameName = Console.ReadLine();
+            Game game = new Game();
+            game.gameName = Console.ReadLine();
             Console.WriteLine("Input How Many Hours Will It Take To Finish.");
-            games[i].howLongWillitTake = Convert.ToInt32(Console.ReadLine());
+            game.howLongWillitTake = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine("Input How much do you want to play it.");
-            games[i].howMuchYouWantToPlayIt = Convert.ToInt32(Console.ReadLine());
+            game.howMuchYouWantToPlayIt = Convert.ToInt32(Console.ReadLine());
             Console.WriteLine();
+            games.Add(game);
+            Console.WriteLine("Press E To Stop or anything else to continue ");
+            if (Console.ReadLine()== "E")
+            {
+                break;
+            }
         }
         SortBubbleway();
         foreach (Game s in games)
@@ -35,7 +50,7 @@ public class Program
             Game temp;
             swapped = false;
 
-            for (int v = 1; v < games.Length; v++)
+            for (int v = 1; v < games.Count; v++)
             {
                 if (games[v - 1].totalScore < games[v].totalScore)
                 {
@@ -75,5 +90,25 @@ public class Program
             save.WriteLine(VARIABLE.howMuchYouWantToPlayIt);
         }
         save.Close();
+        
+    }
+
+    private static void Load()
+    {
+        StreamReader loader = new StreamReader("Save.txt");
+        for (int i = 0; i < File.ReadLines("Save.txt").Count()/3; i++)
+        {
+            Game game = new Game();
+            game.gameName = loader.ReadLine();
+            
+            game.howLongWillitTake = Convert.ToInt32(loader.ReadLine());
+            
+            game.howMuchYouWantToPlayIt = Convert.ToInt32(loader.ReadLine());
+            
+            games.Add(game);
+        }
+        
+        loader.Close();
+        
     }
 }
